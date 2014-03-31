@@ -1,0 +1,62 @@
+<?php
+/**
+ * Parent Form UI class
+ */
+class FormUI {
+  /**
+   * Container for the items in this form.
+   * @var array
+   */
+  public $items = array();
+
+  /**
+   * Handle calling for items.
+   *
+   * You can call $form->[type]() to generate a form
+   */
+  public function __call($method, $arguments) {
+    $class_name = 'FormUI' . ucfirst($method);
+    if (class_exists($class_name)) {
+      $instance = new $class_name();
+      $instance->setOptions($arguments);
+      return $instance;
+    }
+  }
+
+  /**
+   * Add an item.
+   *
+   * This can be used in one of three ways:
+   *
+   * 1. Add a FormUIItem:
+   *
+   *     $item = new FormUIMarkup('<p>markup</p>');
+   *     $form_ui->add('key', $item);
+   *
+   * 2. Use a FormUIItem generator:
+   *
+   *     $form_ui->add('key', $form_ui->markup('<p>markup</p>'));
+   *
+   * 3. For markup, you can use a shortcut:
+   *
+   *     $form_ui->add('key', '<p>markup</p>');
+   */
+  public function add($key, $item) {
+    if (is_string($item)) {
+      $item = new FormUIMarkup($item);
+    }
+    $this->items[$key] = $item;
+    return $this;
+  }
+
+  /**
+   * Generate the Drupal compatible form API array
+   */
+  public function generate() {
+    $form = array();
+    foreach ($this->items as $key => $item) {
+      $form[$key] = $item->generate();
+    }
+    return $form;
+  }
+}
