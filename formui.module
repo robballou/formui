@@ -42,10 +42,44 @@ class FormUI {
    *     $form_ui->add('key', '<p>markup</p>');
    */
   public function add($key, $item) {
+    $args = func_get_args();
+    $arg_count = count($args);
+
+    switch ($arg_count) {
+    case 2:
+      $fieldset = NULL;
+      $key = $args[0];
+      $item = $args[1];
+      break;
+    case 3:
+      $fieldset = $args[0];
+      $key = $args[1];
+      $item = $args[2];
+      break;
+    }
+
     if (is_string($item)) {
       $item = new FormUIMarkup($item);
     }
-    $this->items[$key] = $item;
+
+    if (!$fieldset) {
+      $this->items[$key] = $item;
+    }
+    else {
+      $this->items[$fieldset][$key] = $item;
+    }
+
+    return $this;
+  }
+
+  /**
+   * Add a fieldset
+   */
+  public function addFieldset($name, $options = array()) {
+    $this->items[$name] = array('#type' => 'fieldset');
+    foreach ($options as $option => $value) {
+      $this->items[$name]['#' . $option] = $value;
+    }
     return $this;
   }
 
@@ -55,7 +89,20 @@ class FormUI {
   public function generate() {
     $form = array();
     foreach ($this->items as $key => $item) {
-      $form[$key] = $item->generate();
+      if (is_array($item)) {
+        $form[$key] = array();
+        foreach ($item as $item_key => $item_value) {
+          if (preg_match('/^#/', $item_key)) {
+            $form[$key][$item_key] = $item_value;
+          }
+          else {
+            $form[$key][$item_key] = $item_value->generate();
+          }
+        }
+      }
+      else {
+        $form[$key] = $item->generate();
+      }
     }
     return $form;
   }

@@ -40,6 +40,43 @@ class FormUIItem {
    */
   public function setOption($option, $value) {
     $this->itemOptions[$option] = $value;
+    return $this;
+  }
+
+  /**
+   * Set multiple options
+   */
+  public function setOptions($options) {
+    foreach ($options as $key => $value) {
+      $this->setOption($key, $value);
+    }
+    return $this;
+  }
+}
+
+class FormUICheckboxes extends FormUIItem {
+  /**
+   * Constructor
+   */
+  public function __construct() {
+    parent::__construct();
+    $this->setOptions(func_get_args());
+    $this->setOption('type', 'checkboxes');
+  }
+
+  /**
+   * Set the options
+   */
+  public function setOptions($options) {
+    if (count($options) > 0) {
+      if (isset($options[0])) {
+        $this->setOption('options', $options[0]);
+      }
+      else {
+        parent::setOptions($options);
+      }
+    }
+    return $this;
   }
 }
 
@@ -74,8 +111,14 @@ class FormUIMarkup extends FormUIItem {
    */
   public function setOptions($options) {
     if (count($options) > 0) {
-      $this->setOption('markup', $options[0]);
+      if (isset($options[0])) {
+        $this->setOption('markup', $options[0]);
+      }
+      else {
+        parent::setOptions($options);
+      }
     }
+    return $this;
   }
 }
 
@@ -97,8 +140,14 @@ class FormUISelect extends FormUIItem {
    */
   public function setOptions($options) {
     if (count($options) > 0) {
-      $this->setOption('items', $options[0]);
+      if (isset($options[0])) {
+        $this->setOption('items', $options[0]);
+      }
+      else {
+        parent::setOptions($options);
+      }
     }
+    return $this;
   }
 }
 
@@ -120,8 +169,14 @@ class FormUISubmit extends FormUIItem {
    */
   public function setOptions($options) {
     if (count($options) > 0) {
-      $this->setOption('value', $options[0]);
+      if (isset($options[0])) {
+        $this->setOption('value', $options[0]);
+      }
+      else {
+        parent::setOptions($options);
+      }
     }
+    return $this;
   }
 }
 
@@ -148,9 +203,12 @@ class FormUITable extends FormUIItem {
   public function setOptions($options) {
     if (isset($options[0])) {
       $this->setOption('header', $options[0]);
+      if (isset($options[1])) {
+        $this->setOption('rows', $options[1]);
+      }
     }
-    if (isset($options[1])) {
-      $this->setOption('rows', $options[1]);
+    else {
+      parent::setOptions($options);
     }
     return $this;
   }
@@ -177,12 +235,17 @@ class FormUITableselect extends FormUIItem {
    */
   public function setOptions($options) {
     if (count($options) > 0) {
-      $this->setOption('header', $options[0]);
-      if (isset($options[1])) {
-        $this->setOption('options', $options[1]);
-        if (isset($options[2])) {
-          $this->setOption('empty', $options[2]);
+      if (isset($options[0])) {
+        $this->setOption('header', $options[0]);
+        if (isset($options[1])) {
+          $this->setOption('options', $options[1]);
+          if (isset($options[2])) {
+            $this->setOption('empty', $options[2]);
+          }
         }
+      }
+      else {
+        parent::setOptions($options);
       }
     }
     return $this;
@@ -207,10 +270,15 @@ class FormUITextfield extends FormUIItem {
    */
   public function setOptions($options) {
     if (count($options) > 0) {
-      if (is_array($options[0])) {
-        $options[0] = implode(',', $options[0]);
+      if (isset($options[0])) {
+        if (is_array($options[0])) {
+          $options[0] = implode(',', $options[0]);
+        }
+        $this->setOption('default_value', $options[0]);
       }
-      $this->setOption('default_value', $options[0]);
+      else {
+        parent::setOptions($options);
+      }
     }
     return $this;
   }
