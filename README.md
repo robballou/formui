@@ -19,3 +19,13 @@ This is an alpha "release" and this API can change at any time!
 
         return $formui->generate();
     }
+
+## Types
+
+* Hidden
+* Markup
+* Select
+* Submit
+* Table
+* Tableselect
+* Textfield

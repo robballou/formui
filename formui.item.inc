@@ -126,6 +126,37 @@ class FormUISubmit extends FormUIItem {
 }
 
 /**
+ * Implement a table element
+ */
+class FormUITable extends FormUIItem {
+  public function __construct() {
+    parent::__construct();
+    $this->setOption('attributes', array());
+    $this->setOption('empty', '');
+    $this->setOption('caption', '');
+    $this->setOption('colgroups', array());
+    $this->setOption('sticky', FALSE);
+    $this->setOption('theme', 'table');
+    $this->setOptions(func_get_args());
+  }
+
+  /**
+   * Set options.
+   *
+   * Usage: $header, $rows
+   */
+  public function setOptions($options) {
+    if (isset($options[0])) {
+      $this->setOption('header', $options[0]);
+    }
+    if (isset($options[1])) {
+      $this->setOption('rows', $options[1]);
+    }
+    return $this;
+  }
+}
+
+/**
  * Implement a tableselect element
  */
 class FormUITableselect extends FormUIItem {
@@ -141,6 +172,8 @@ class FormUITableselect extends FormUIItem {
 
   /**
    * Set the options
+   *
+   * Usage: setOptions($header, $options, $empty)
    */
   public function setOptions($options) {
     if (count($options) > 0) {
@@ -152,6 +185,7 @@ class FormUITableselect extends FormUIItem {
         }
       }
     }
+    return $this;
   }
 }
 
@@ -178,5 +212,6 @@ class FormUITextfield extends FormUIItem {
       }
       $this->setOption('default_value', $options[0]);
     }
+    return $this;
   }
 }
