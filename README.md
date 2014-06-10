@@ -13,7 +13,11 @@ This is an alpha "release" and this API can change at any time!
         $options = array('example1' => 'Example 1', 'example2' => 'Example 2');
 
         $formui
-          ->add('some_field', $formui->textfield())
+          ->add(
+            'some_field',
+            $formui->textfield()
+              ->setOption('label', 'Some Field')
+          )
           ->add('another_field', $formui->select($options))
           ->add('submit', $formui->submit());
 
@@ -22,6 +26,8 @@ This is an alpha "release" and this API can change at any time!
 
 ## Types
 
+* Checkbox
+* Checkboxes
 * Hidden
 * Markup
 * Select
