@@ -35,3 +35,21 @@ This is an alpha "release" and this API can change at any time!
 * Table
 * Tableselect
 * Textfield
+
+## Making new types
+
+You can load new types by creating your own classes:
+
+    class MyCustomItem extends FormUIItem {
+      /**
+       * Constructor
+       */
+      public function __construct() {
+        parent::__construct();
+        $this->setOption('type', 'custom_thing');
+      }
+    }
+
+Instead of calling `$formui->thing()` use:
+
+    $formui->add('thing', new MyCustomItem());
