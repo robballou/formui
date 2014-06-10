@@ -46,16 +46,16 @@ class FormUI {
     $arg_count = count($args);
 
     switch ($arg_count) {
-    case 2:
-      $fieldset = NULL;
-      $key = $args[0];
-      $item = $args[1];
-      break;
-    case 3:
-      $fieldset = $args[0];
-      $key = $args[1];
-      $item = $args[2];
-      break;
+      case 2:
+        $fieldset = NULL;
+        $key = $args[0];
+        $item = $args[1];
+        break;
+      case 3:
+        $fieldset = $args[0];
+        $key = $args[1];
+        $item = $args[2];
+        break;
     }
 
     if (is_string($item)) {
@@ -89,7 +89,7 @@ class FormUI {
   public function generate() {
     $form = array();
     foreach ($this->items as $key => $item) {
-      if (is_array($item)) {
+      if (is_array($item) && !preg_match('/^#/', $key)) {
         $form[$key] = array();
         foreach ($item as $item_key => $item_value) {
           if (preg_match('/^#/', $item_key)) {
@@ -101,9 +101,22 @@ class FormUI {
         }
       }
       else {
-        $form[$key] = $item->generate();
+        if (preg_match('/^#/', $key)) {
+          $form[$key] = $item;
+        }
+        else {
+          $form[$key] = $item->generate();
+        }
       }
     }
     return $form;
+  }
+
+  /**
+   * Set a form option
+   */
+  public function setOption($option, $value) {
+    $this->items['#' . $option] = $value;
+    return $this;
   }
 }

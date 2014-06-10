@@ -54,6 +54,23 @@ class FormUIItem {
   }
 }
 
+/**
+ * Checkbox item
+ */
+class FormUICheckbox extends FormUIItem {
+
+  /**
+   * Constructor
+   */
+  public function __construct() {
+    parent::__construct();
+    $this->setOption('type', 'checkbox');
+  }
+}
+
+/**
+ * Checkboxes item
+ */
 class FormUICheckboxes extends FormUIItem {
   /**
    * Constructor
@@ -74,6 +91,10 @@ class FormUICheckboxes extends FormUIItem {
       }
       else {
         parent::setOptions($options);
+      }
+
+      if (isset($options[1])) {
+        $this->setOption('default_value', $options[1]);
       }
     }
     return $this;
@@ -141,7 +162,7 @@ class FormUISelect extends FormUIItem {
   public function setOptions($options) {
     if (count($options) > 0) {
       if (isset($options[0])) {
-        $this->setOption('items', $options[0]);
+        $this->setOption('options', $options[0]);
       }
       else {
         parent::setOptions($options);
@@ -184,6 +205,9 @@ class FormUISubmit extends FormUIItem {
  * Implement a table element
  */
 class FormUITable extends FormUIItem {
+  /**
+   * Constructor
+   */
   public function __construct() {
     parent::__construct();
     $this->setOption('attributes', array());
