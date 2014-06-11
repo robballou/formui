@@ -16,13 +16,15 @@ This is an alpha "release" and this API can change at any time!
           ->add(
             'some_field',
             $formui->textfield()
-              ->setOption('label', 'Some Field')
+              ->setOption('title', 'Some Field')
           )
           ->add('another_field', $formui->select($options))
-          ->add('submit', $formui->submit());
+          ->add('submit', $formui->submit('Submit'));
 
         return $formui->generate();
     }
+
+For `FormUIItem` instances, you can use `setOption()` or use a method for the option you want to set. For example, to set the title, you can also just run: `$formui->textfield()->title('Thing')`.
 
 ## Types
 
