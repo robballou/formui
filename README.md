@@ -26,10 +26,17 @@ This is an alpha "release" and this API can change at any time!
 
 For `FormUIItem` instances, you can use `setOption()` or use a method for the option you want to set. For example, to set the title, you can also just run: `$formui->textfield()->title('Thing')`.
 
+You can also use fieldsets:
+
+    $formui
+      ->addFieldset('fieldset_name')
+      ->add('fieldset_name', 'some_field', $formui->textfield());
+
 ## Types
 
 * Checkbox
 * Checkboxes
+* File
 * Hidden
 * Markup
 * Select

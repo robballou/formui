@@ -102,6 +102,19 @@ class FormUICheckboxes extends FormUIItem {
 }
 
 /**
+ * File upload item
+ */
+class FormUIFile extends FormUIItem {
+  /**
+   * Constructor
+   */
+  public function __construct() {
+    parent::__construct();
+    $this->setOption('type', 'file');
+  }
+}
+
+/**
  * Hidden item
  */
 class FormUIHidden extends FormUITextfield {
