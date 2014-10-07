@@ -4,6 +4,17 @@ The FormUI is a developer API meant to help build Drupal forms with Drupal's For
 
 This is an alpha "release" and this API can change at any time!
 
+## Installation
+
+### Drush
+
+    drush dl formui && drush en formui
+
+### Git
+
+    git clone git@github.com:robballou/formui.git --branch=7.x-1.x formui
+    drush en formui
+
 ## Usage
 
     function example_form($form, &$form_state) {
