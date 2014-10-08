@@ -10,6 +10,13 @@ class FormUI {
   public $items = array();
 
   /**
+   * Create the form
+   */
+  public function __construct($form = array()) {
+    $this->items = $form;
+  }
+
+  /**
    * Handle calling for items.
    *
    * You can call $form->[type]() to generate a form
@@ -84,6 +91,21 @@ class FormUI {
   }
 
   /**
+   * Append a submit handler if it doesn't already exist.
+   */
+  public function addSubmitHandler($handler) {
+    $this->prepareSubmitHandlers();
+
+    // check that we're not adding redundant submit handlers
+    if (in_array($handler, $this->items['#submit'])) {
+      return $this;
+    }
+
+    array_push($this->items['#submit'], $handler);
+    return $this;
+  }
+
+  /**
    * Generate the Drupal compatible form API array
    */
   public function generate() {
@@ -92,7 +114,8 @@ class FormUI {
       if (is_array($item) && !preg_match('/^#/', $key)) {
         $form[$key] = array();
         foreach ($item as $item_key => $item_value) {
-          if (preg_match('/^#/', $item_key)) {
+          // ignore #keys and $item_values that are arrays
+          if (preg_match('/^#/', $item_key) || is_array($item_value)) {
             $form[$key][$item_key] = $item_value;
           }
           else {
@@ -110,6 +133,27 @@ class FormUI {
       }
     }
     return $form;
+  }
+
+  /**
+   * Make sure the form has submit handlers.
+   *
+   * Used internally, not chainable.
+   */
+  public function prepareSubmitHandlers() {
+    // check if the form has submit handlers already
+    if (!isset($this->items['#submit'])) {
+      $this->items['#submit'] = array();
+    }
+  }
+
+  /**
+   * Insert a submit handler at the start of the list
+   */
+  public function prependSubmitHandler($handler) {
+    $this->prepareSubmitHandlers();
+    array_unshift($handler, $this->items['#submit']);
+    return $this;
   }
 
   /**
