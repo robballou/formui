@@ -2,7 +2,18 @@
 
 The FormUI is a developer API meant to help build Drupal forms with Drupal's Form API. In short, it's an object-oriented wrapper around the Form API that is boiled down to an actual form array.
 
-This is an alpha "release" and this API can change at any time!
+This is an alpha release and this API can change at any time! Questions and issues welcome.
+
+## Installation
+
+### Drush
+
+    drush dl formui && drush en formui
+
+### Git
+
+    git clone git@github.com:robballou/formui.git --branch=7.x-1.x formui
+    drush en formui
 
 ## Usage
 
@@ -30,7 +41,9 @@ For `FormUIItem` instances, you can use `setOption()` or use a method for the op
 
 * Checkbox
 * Checkboxes
+* File
 * Hidden
+* Managedfile
 * Markup
 * Select
 * Submit
