@@ -102,6 +102,24 @@ class FormUICheckboxes extends FormUIItem {
 }
 
 /**
+ * Add an email field.
+ *
+ * Fallsback to textfield.
+ */
+class FormUIEmail extends FormUITextfield {
+  /**
+   * Constructor
+   */
+  public function __construct() {
+    parent::__construct();
+    $this->setOptions(func_get_args());
+    if (module_exists('elements')) {
+      $this->setOption('type', 'emailfield');
+    }
+  }
+}
+
+/**
  * File upload item
  */
 class FormUIFile extends FormUIItem {
@@ -124,6 +142,19 @@ class FormUIHidden extends FormUITextfield {
   public function __construct() {
     parent::__construct();
     $this->setOption('type', 'hidden');
+  }
+}
+
+/**
+ * File upload item
+ */
+class FormUIManagedFile extends FormUIFile {
+  /**
+   * Constructor
+   */
+  public function __construct() {
+    parent::__construct();
+    $this->setOption('type', 'managed_file');
   }
 }
 
@@ -286,6 +317,19 @@ class FormUITableselect extends FormUIItem {
       }
     }
     return $this;
+  }
+}
+
+/**
+ * Textarea element
+ */
+class FormUITextarea extends FormUITextfield {
+  /**
+   * Constructor
+   */
+  public function __construct() {
+    parent::__construct();
+    $this->setOption('type', 'textarea');
   }
 }
 

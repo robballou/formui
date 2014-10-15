@@ -4,17 +4,6 @@ The FormUI is a developer API meant to help build Drupal forms with Drupal's For
 
 This is an alpha "release" and this API can change at any time!
 
-## Installation
-
-### Drush
-
-    drush dl formui && drush en formui
-
-### Git
-
-    git clone git@github.com:robballou/formui.git --branch=7.x-1.x formui
-    drush en formui
-
 ## Usage
 
     function example_form($form, &$form_state) {
@@ -37,24 +26,22 @@ This is an alpha "release" and this API can change at any time!
 
 For `FormUIItem` instances, you can use `setOption()` or use a method for the option you want to set. For example, to set the title, you can also just run: `$formui->textfield()->title('Thing')`.
 
-You can also use fieldsets:
-
-    $formui
-      ->addFieldset('fieldset_name')
-      ->add('fieldset_name', 'some_field', $formui->textfield());
-
 ## Types
 
 * Checkbox
 * Checkboxes
-* File
 * Hidden
 * Markup
 * Select
 * Submit
 * Table
 * Tableselect
+* Textarea
 * Textfield
+
+If the [Elements module](http://drupal.org/project/elements) is available, you can also use:
+
+* Email
 
 ## Making new types
 

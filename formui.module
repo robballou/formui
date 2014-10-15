@@ -28,6 +28,7 @@ class FormUI {
       $instance->setOptions($arguments);
       return $instance;
     }
+    throw new Exception('Method or form item does not exist: ' . $class_name);
   }
 
   /**
@@ -96,12 +97,17 @@ class FormUI {
   public function addSubmitHandler($handler) {
     $this->prepareSubmitHandlers();
 
+    $submit_handlers =& $this->items['#submit'];
+    if (isset($this->items['actions']['submit'])) {
+      $submit_handlers =& $this->items['actions']['submit']['#submit'];
+    }
+
     // check that we're not adding redundant submit handlers
-    if (in_array($handler, $this->items['#submit'])) {
+    if (in_array($handler, $submit_handlers)) {
       return $this;
     }
 
-    array_push($this->items['#submit'], $handler);
+    array_push($submit_handlers, $handler);
     return $this;
   }
 
@@ -141,8 +147,7 @@ class FormUI {
    * Used internally, not chainable.
    */
   public function prepareSubmitHandlers() {
-    // check if the form has submit handlers already
-    if (!isset($this->items['#submit'])) {
+    if (!isset($this->items['actions']['submit']) && !isset($this->items['#submit'])) {
       $this->items['#submit'] = array();
     }
   }
@@ -152,7 +157,13 @@ class FormUI {
    */
   public function prependSubmitHandler($handler) {
     $this->prepareSubmitHandlers();
-    array_unshift($handler, $this->items['#submit']);
+
+    $submit_handlers =& $this->items['#submit'];
+    if (isset($this->items['actions']['submit'])) {
+      $submit_handlers =& $this->items['actions']['submit']['#submit'];
+    }
+
+    array_unshift($handler, $submit_handlers);
     return $this;
   }
 
