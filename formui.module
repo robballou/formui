@@ -70,10 +70,8 @@ class FormUI {
       $item = new FormUIMarkup($item);
     }
 
-    if (!$fieldset) {
-      $this->items[$key] = $item;
-    }
-    else {
+    $this->items[$key] = $item;
+    if ($fieldset) {
       $this->items[$fieldset][$key] = $item;
     }
 
@@ -117,28 +115,36 @@ class FormUI {
   public function generate() {
     $form = array();
     foreach ($this->items as $key => $item) {
-      if (is_array($item) && !preg_match('/^#/', $key)) {
+      if (is_array($item) && !$this->isOption($key)) {
         $form[$key] = array();
         foreach ($item as $item_key => $item_value) {
           // ignore #keys and $item_values that are arrays
-          if (preg_match('/^#/', $item_key) || is_array($item_value)) {
-            $form[$key][$item_key] = $item_value;
-          }
-          else {
+          $form[$key][$item_key] = $item_value;
+          if (!$this->isOption($item_key) && !is_array($item_value)) {
             $form[$key][$item_key] = $item_value->generate();
           }
         }
       }
       else {
-        if (preg_match('/^#/', $key)) {
-          $form[$key] = $item;
-        }
-        else {
+        $form[$key] = $item;
+        if (!$this->isOption($key)) {
           $form[$key] = $item->generate();
         }
       }
     }
     return $form;
+  }
+
+  /**
+   * Is this thing a FAPI option
+   *
+   * @param string $key
+   *   A string
+   * @return bool
+   *   TRUE if this is an option key
+   */
+  public function isOption($key) {
+    return substr($key, 0, 1) === '#';
   }
 
   /**
@@ -173,5 +179,12 @@ class FormUI {
   public function setOption($option, $value) {
     $this->items['#' . $option] = $value;
     return $this;
+  }
+
+  /**
+   * Set multiple options
+   */
+  public function setOptions($options) {
+    array_walk($options, array($this, 'setOption'));
   }
 }
