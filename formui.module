@@ -177,7 +177,8 @@ class FormUI {
    * Set a form option
    */
   public function setOption($option, $value) {
-    $this->items['#' . $option] = $value;
+    $option = '#' . $option;
+    $this->items[$option] = $value;
     return $this;
   }
 
@@ -185,6 +186,8 @@ class FormUI {
    * Set multiple options
    */
   public function setOptions($options) {
-    array_walk($options, array($this, 'setOption'));
+    foreach ($options as $option => $value) {
+      $this->setOption($option, $value);
+    }
   }
 }
