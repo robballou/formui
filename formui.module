@@ -5,6 +5,7 @@
 class FormUI {
   /**
    * Container for the items in this form.
+   *
    * @var array
    */
   public $items = array();
@@ -139,12 +140,26 @@ class FormUI {
    * Is this thing a FAPI option
    *
    * @param string $key
-   *   A string
+   *   A string.
+   *
    * @return bool
    *   TRUE if this is an option key
    */
   public function isOption($key) {
     return substr($key, 0, 1) === '#';
+  }
+
+  /**
+   * Check if the item exists.
+   *
+   * @param string $key
+   *   The item key to check.
+   *
+   * @return bool
+   *   TRUE if the key exists, FALSE if not.
+   */
+  public function itemExists($key) {
+    return isset($this->items[$key]);
   }
 
   /**
