@@ -60,16 +60,60 @@ If the [Elements module](http://drupal.org/project/elements) is available, you c
 
 You can load new types by creating your own classes:
 
-    class MyCustomItem extends FormUIItem {
-      /**
-       * Constructor
-       */
-      public function __construct() {
-        parent::__construct();
-        $this->setOption('type', 'custom_thing');
-      }
-    }
+```php
+class MyCustomItem extends FormUIItem {
+  /**
+   * Constructor
+   */
+  public function __construct() {
+    parent::__construct();
+    $this->setOption('type', 'custom_thing');
+  }
+}
+```
 
 Instead of calling `$formui->thing()` use:
 
-    $formui->add('thing', new MyCustomItem());
+```php
+$formui->add('thing', new MyCustomItem());
+```
+
+## Options
+
+The `setOption` and `setOptions` methods are wrappers around setting values in the form array for that item. As an example, this Form API code:
+
+```php
+$form['thing'] = array(
+  '#type' => 'textfield',
+  '#title' => t('Thing'),
+  '#size' => 25,
+);
+```
+
+Would be this in FormUI:
+
+```php
+$formui->add('thing', $formui->textfield()->setOption('size' => 25))
+```
+
+If you want to add something `#ajax` or `#attributes`, you can do that with:
+
+```php
+$formui->add(
+  'thing',
+  $formui->textfield()
+    ->setOption('size' => 25)
+    ->setOption('attributes' => array('class' => array('thing')))
+  );
+```
+
+## Fieldsets
+
+You can make fieldsets, too:
+
+```php
+$formui
+  ->addFieldset('group1')
+  // add 'item' to this group
+  ->add('group1', 'item', $formui->textfield());
+```
