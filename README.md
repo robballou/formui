@@ -117,3 +117,15 @@ $formui
   // add 'item' to this group
   ->add('group1', 'item', $formui->textfield());
 ```
+
+## Wrapping form items
+
+You can wrap form items (set the `#prefix` and `#suffix` options) with the `wrap()` method:
+
+```php
+// wrap the textfield with <div class="my-class"></div>
+$formui
+  ->add('example', $formui->textfield()->wrap('div.my-class'));
+```
+
+This defaults wrapping with a plain `div`.

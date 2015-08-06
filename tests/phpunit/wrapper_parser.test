@@ -1,0 +1,37 @@
+<?php
+require('formui.item.inc');
+
+class WrapperTest extends PHPUnit_Framework_TestCase {
+  public function testJustTagWrapper() {
+    $item = new FormUIItem();
+    $item->wrap('div');
+
+    $this->assertEquals('<div>', $item->itemOptions['prefix']);
+    $this->assertEquals('</div>', $item->itemOptions['suffix']);
+  }
+
+  public function testTagClassWrapper() {
+    $item = new FormUIItem();
+    $item->wrap('div.class');
+
+    $this->assertEquals('<div class="class">', $item->itemOptions['prefix']);
+    $this->assertEquals('</div>', $item->itemOptions['suffix']);
+  }
+
+  public function testTagIDWrapper() {
+    $item = new FormUIItem();
+    $item->wrap('div#my-id');
+
+    $this->assertEquals('<div id="my-id">', $item->itemOptions['prefix']);
+    $this->assertEquals('</div>', $item->itemOptions['suffix']);
+  }
+
+  public function testTagIDClassWrapper() {
+    $item = new FormUIItem();
+    $item->wrap('div#my-id.my-class');
+
+    $this->assertEquals('<div id="my-id" class="my-class">', $item->itemOptions['prefix']);
+    $this->assertEquals('</div>', $item->itemOptions['suffix']);
+  }
+
+}
