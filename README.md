@@ -45,6 +45,7 @@ For `FormUIItem` instances, you can use `setOption()` or use a method for the op
 * Hidden
 * Managedfile
 * Markup
+* Radios
 * Select
 * Submit
 * Table
