@@ -52,6 +52,71 @@ class FormUIItem {
     }
     return $this;
   }
+
+  /**
+   * Set the prefix/suffix for this element based on the provided notation.
+   */
+  public function wrap($wrap = 'div') {
+    // parse the wrap notation
+    $mode = 'tag';
+    $tag = $id = $class = '';
+    $classes = array();
+
+    for ($i = 0, $len = strlen($wrap); $i < $len; $i++) {
+      $char = substr($wrap, $i, 1);
+      if (!in_array($char, array('.', '#'))) {
+        if ($mode === 'tag') {
+          $tag .= $char;
+        }
+        elseif ($mode === 'id') {
+          $id .= $char;
+        }
+        elseif ($mode === 'class') {
+          $class .= $char;
+        }
+      }
+      elseif ($char === '.') {
+        $mode = 'class';
+
+        // if a class name has been started, add it to the classes
+        if ($class) {
+          $classes[] = $class;
+          $class = '';
+        }
+      }
+      elseif ($char === '#') {
+        $mode = 'id';
+
+        // if a class name has been started, add it to the classes
+        if ($class) {
+          $classes[] = $class;
+          $class = '';
+        }
+      }
+    }
+    // if a class name has been started, add it to the classes
+    if ($class) {
+      $classes[] = $class;
+      $class = '';
+    }
+
+    // save the suffix
+    $prefix = '<' . $tag;
+    if ($id) {
+      $prefix .= ' id="' . $id .'"';
+    }
+    if ($classes) {
+      $prefix .= ' class="' . implode(' ', $classes) . '"';
+    }
+    $prefix .= '>';
+    $this->setOption('prefix', $prefix);
+
+    // save the suffix
+    $this->setOption('suffix', '</' . $tag . '>');
+
+    return $this;
+  }
+
 }
 
 class FormUIButton extends FormUIItem {
@@ -211,6 +276,21 @@ class FormUIMarkup extends FormUIItem {
     }
     return $this;
   }
+}
+
+/**
+ * Radios item
+ */
+class FormUIRadios extends FormUICheckboxes {
+  /**
+   * Constructor.
+   */
+  public function __construct() {
+    parent::__construct();
+    $this->setOptions(func_get_args());
+    $this->setOption('type', 'radios');
+  }
+
 }
 
 /**
