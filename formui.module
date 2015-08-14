@@ -74,6 +74,7 @@ class FormUI {
     $this->items[$key] = $item;
     if ($fieldset) {
       $this->items[$fieldset][$key] = $item;
+      unset($this->items[$key]);
     }
 
     return $this;
