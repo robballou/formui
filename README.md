@@ -28,6 +28,7 @@ This is an alpha release and this API can change at any time! Questions and issu
             'some_field',
             $formui->textfield()
               ->setOption('title', 'Some Field')
+              ->setAttribute('class', array('some-class'))
           )
           ->add('another_field', $formui->select($options))
           ->add('submit', $formui->submit('Submit'));
@@ -130,3 +131,17 @@ $formui
 ```
 
 This defaults wrapping with a plain `div`.
+
+## Automatically set item weight
+
+FormUI can make managing form item weights easier too:
+
+```php
+$formui
+  // turns on the weight setting plus sets the default weight
+  ->setWeight(10)
+  // will get a #weight of 10
+  ->add('item1', $formui->textfield())
+  // will get a #weight of 20
+  ->add('item2', $formui->textfield())
+```

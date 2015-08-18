@@ -11,6 +11,20 @@ class FormUI {
   public $items = array();
 
   /**
+   * The current item weight, if we're autosetting it.
+   *
+   * @var mixed
+   */
+  public $weight = NULL;
+
+  /**
+   * Weight increment.
+   *
+   * @var int
+   */
+  public $weightIncrement = 10;
+
+  /**
    * Create the form
    */
   public function __construct($form = array()) {
@@ -69,6 +83,11 @@ class FormUI {
 
     if (is_string($item)) {
       $item = new FormUIMarkup($item);
+    }
+
+    if ($this->weight !== NULL) {
+      $item->setOption('weight', $this->weight);
+      $this->incrementWeight();
     }
 
     $this->items[$key] = $item;
@@ -164,6 +183,14 @@ class FormUI {
   }
 
   /**
+   * Increment the weight.
+   */
+  public function incrementWeight() {
+    $this->weight += $this->weightIncrement;
+    return $this;
+  }
+
+  /**
    * Make sure the form has submit handlers.
    *
    * Used internally, not chainable.
@@ -207,4 +234,13 @@ class FormUI {
     }
     return $this;
   }
+
+  /**
+   * Set the weight.
+   */
+  public function setWeight($weight) {
+    $this->weight = $weight;
+    return $this;
+  }
+
 }

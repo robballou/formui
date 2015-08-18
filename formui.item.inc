@@ -5,6 +5,7 @@
 class FormUIItem {
   /**
    * Internal array of options for this item
+   *
    * @var array
    */
   public $itemOptions = array();
@@ -33,6 +34,20 @@ class FormUIItem {
       $item['#' . $key] = $value;
     }
     return $item;
+  }
+
+  /**
+   * Set a form item attribute.
+   *
+   * This will set/override the attribute set.
+   */
+  public function setAttribute($attribute, $value) {
+    if (!isset($this->itemOptions['attributes'])) {
+      $this->itemOptions['attributes'] = array();
+    }
+
+    $this->itemOptions['attributes'][$attribute] = $value;
+    return $this;
   }
 
   /**
