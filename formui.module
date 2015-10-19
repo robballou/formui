@@ -131,6 +131,26 @@ class FormUI {
   }
 
   /**
+   * Append a validate handler if it doesn't already exist.
+   */
+  public function addValidateHandler($handler) {
+    $this->prepareValidateHandlers();
+
+    $validate_handlers =& $this->items['#validate'];
+    if (isset($this->items['actions']['validate'])) {
+      $validate_handlers =& $this->items['actions']['validate']['#validate'];
+    }
+
+    // check that we're not adding redundant validate handlers
+    if (in_array($handler, $validate_handlers)) {
+      return $this;
+    }
+
+    array_push($validate_handlers, $handler);
+    return $this;
+  }
+
+  /**
    * Generate the Drupal compatible form API array
    */
   public function generate() {
@@ -213,6 +233,39 @@ class FormUI {
     }
 
     array_unshift($handler, $submit_handlers);
+    return $this;
+  }
+
+  /**
+   * Prepare the validate handlers.
+   */
+  public function prepareValidateHandlers() {
+    if (!isset($this->items['actions']['validate']) && !isset($this->items['#validate'])) {
+      $this->items['#validate'] = array();
+    }
+  }
+
+  /**
+   * Set an existing item's options.
+   *
+   * @param string $item
+   *   The item array key. This can also be a period-separated list, ex.
+   *   'items.item'.
+   * @param string $option
+   *   The option to set.
+   * @param mixed $value
+   *   The option value.
+   */
+  public function set($item, $option, $value) {
+    $parts = explode('.', $item);
+    $this_item =& $this->items;
+    foreach ($parts as $part) {
+      if (!isset($this_item[$part])) {
+        return $this;
+      }
+      $this_item =& $this_item[$part];
+    }
+    $this_item[$option] = $value;
     return $this;
   }
 
