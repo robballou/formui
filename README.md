@@ -12,7 +12,7 @@ This is an alpha release and this API can change at any time! Questions and issu
 
 ### Git
 
-    git clone git@github.com:robballou/formui.git --branch=7.x-1.x formui
+    git clone git@github.com:robballou/formui.git --branch=8.x-1.x formui
     drush en formui
 
 ## Usage
