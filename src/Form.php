@@ -87,6 +87,7 @@ class Form {
         $key = $args[0];
         $item = $args[1];
         break;
+
       case 3:
         $fieldset = $args[0];
         $key = $args[1];
@@ -105,10 +106,9 @@ class Form {
 
     $this->items[$key] = $item;
     if ($fieldset) {
-      $this->items[$fieldset][$key] = $item;
+      $this->items[$fieldset]->$key = $item;
       unset($this->items[$key]);
     }
-
     return $this;
   }
 
@@ -116,10 +116,7 @@ class Form {
    * Add a container.
    */
   public function addContainer($name, array $options = array()) {
-    $this->items[$name] = array('#type' => 'container');
-    foreach ($options as $option => $value) {
-      $this->items[$name]['#' . $option] = $value;
-    }
+    $this->add($name, $this->container($options));
     return $this;
   }
 
@@ -127,10 +124,7 @@ class Form {
    * Add a fieldset
    */
   public function addFieldset($name, array $options = array()) {
-    $this->items[$name] = array('#type' => 'fieldset');
-    foreach ($options as $option => $value) {
-      $this->items[$name]['#' . $option] = $value;
-    }
+    $this->add($name, $this->fieldset($options));
     return $this;
   }
 
