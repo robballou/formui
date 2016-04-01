@@ -40,13 +40,23 @@ class Form {
    * You can call $form->[type]() to generate a form
    */
   public function __call($method, $arguments) {
-    $class_name = '\Drupal\formui\\' . ucfirst($method);
+    $add = FALSE;
+    if (preg_match('/^add(.+)$/', $method, $matches)) {
+      $add = TRUE;
+      $method = $matches[1];
+      $key = array_shift($arguments);
+    }
+
+    $class_name = '\Drupal\formui\Item\\' . ucfirst($method);
     if (class_exists($class_name)) {
       $instance = new $class_name();
       $instance->setOptions($arguments);
+      if ($add) {
+        return $this->add($key, $instance);
+      }
       return $instance;
     }
-    throw new Exception('Method or form item does not exist: ' . $class_name);
+    throw new \Exception('Method or form item does not exist: ' . $class_name);
   }
 
   /**
@@ -85,7 +95,7 @@ class Form {
     }
 
     if (is_string($item)) {
-      $item = new FormUIMarkup($item);
+      $item = new \Drupal\formui\Item\Markup($item);
     }
 
     if ($this->weight !== NULL) {
@@ -103,9 +113,20 @@ class Form {
   }
 
   /**
+   * Add a container.
+   */
+  public function addContainer($name, array $options = array()) {
+    $this->items[$name] = array('#type' => 'container');
+    foreach ($options as $option => $value) {
+      $this->items[$name]['#' . $option] = $value;
+    }
+    return $this;
+  }
+
+  /**
    * Add a fieldset
    */
-  public function addFieldset($name, $options = array()) {
+  public function addFieldset($name, array $options = array()) {
     $this->items[$name] = array('#type' => 'fieldset');
     foreach ($options as $option => $value) {
       $this->items[$name]['#' . $option] = $value;

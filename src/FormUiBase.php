@@ -11,23 +11,36 @@ use Drupal\formui\Form;
  * Create a form base using FormUI.
  */
 abstract class FormUiBase extends FormBase {
+
+  public $form = NULL;
+
+  /**
+   *
+   */
+  public function __call($method, $arguments) {
+    return call_user_func_array([$this->form, $method], $arguments);
+  }
+
   /**
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    $formui = new Form($form);
+    $this->form = new Form($form);
 
-    $args = [$formui, $form_state];
-    $function_args = func_get_args();
-    $args = $args + array_slice($function_args, 2);
-    call_user_func_array([$this, 'buildFormUi'], $args);
-    $form = $formui->generate();
+    $args = array_slice(func_get_args(), 2);
+    $this->buildFormUi($form_state, $args);
+
+    $form = $this->form->generate();
+    // dpm($form);
+    return $form;
   }
 
   /**
    * Build the form using form UI.
+   *
+   * The form instance can be accessed at `$this->formui`.
    */
-  public function buildFormUi(Form $form, FormStateInterface $form_state) {
+  public function buildFormUi(FormStateInterface $form_state) {
   }
 
 }
