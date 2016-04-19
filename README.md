@@ -17,9 +17,10 @@ This is an alpha release and this API can change at any time! Questions and issu
 
 ## Usage
 
-    function example_form($form, &$form_state) {
+    use Drupal\formui\Form;
+    function example_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state) {
         module_load_include('module', 'formui');
-        $formui = new FormUI();
+        $formui = new Form();
 
         $options = array('example1' => 'Example 1', 'example2' => 'Example 2');
 
@@ -37,6 +38,25 @@ This is an alpha release and this API can change at any time! Questions and issu
     }
 
 For `FormUIItem` instances, you can use `setOption()` or use a method for the option you want to set. For example, to set the title, you can also just run: `$formui->textfield()->title('Thing')`.
+
+You can also use the new `Form::update()` pattern as well. This will eliminate the need to create the form object and return the array.
+
+    use Drupal\formui\Form;
+    function example_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state) {
+      Form::update($form, function($form) {
+        $options = array('example1' => 'Example 1', 'example2' => 'Example 2');
+
+        $formui
+          ->add(
+            'some_field',
+            $formui->textfield()
+              ->setOption('title', 'Some Field')
+              ->setAttribute('class', array('some-class'))
+          )
+          ->add('another_field', $formui->select($options))
+          ->add('submit', $formui->submit('Submit'));
+      });
+    }
 
 ## Types
 
@@ -109,15 +129,17 @@ $formui->add(
   );
 ```
 
-## Fieldsets
+## Fieldsets and containers
 
-You can make fieldsets, too:
+You can make fieldsets (or containers), too:
 
 ```php
 $formui
   ->addFieldset('group1')
+  ->addContainer('group2')
   // add 'item' to this group
-  ->add('group1', 'item', $formui->textfield());
+  ->add('group1', 'item', $formui->textfield())
+  ->add('group2', 'item2', $formui->textfield());
 ```
 
 ## Wrapping form items
