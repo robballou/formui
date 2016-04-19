@@ -17,46 +17,50 @@ This is an alpha release and this API can change at any time! Questions and issu
 
 ## Usage
 
-    use Drupal\formui\Form;
-    function example_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state) {
-        module_load_include('module', 'formui');
-        $formui = new Form();
+```php
+use Drupal\formui\Form;
+function example_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state) {
+  module_load_include('module', 'formui');
+  $formui = new Form();
 
-        $options = array('example1' => 'Example 1', 'example2' => 'Example 2');
+  $options = array('example1' => 'Example 1', 'example2' => 'Example 2');
 
-        $formui
-          ->add(
-            'some_field',
-            $formui->textfield()
-              ->setOption('title', 'Some Field')
-              ->setAttribute('class', array('some-class'))
-          )
-          ->add('another_field', $formui->select($options))
-          ->add('submit', $formui->submit('Submit'));
+  $formui
+    ->add(
+      'some_field',
+      $formui->textfield()
+        ->setOption('title', 'Some Field')
+        ->setAttribute('class', array('some-class'))
+    )
+    ->add('another_field', $formui->select($options))
+    ->add('submit', $formui->submit('Submit'));
 
-        return $formui->generate();
-    }
+  return $formui->generate();
+}
+```
 
 For `FormUIItem` instances, you can use `setOption()` or use a method for the option you want to set. For example, to set the title, you can also just run: `$formui->textfield()->title('Thing')`.
 
 You can also use the new `Form::update()` pattern as well. This will eliminate the need to create the form object and return the array.
 
-    use Drupal\formui\Form;
-    function example_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state) {
-      Form::update($form, function($form) {
-        $options = array('example1' => 'Example 1', 'example2' => 'Example 2');
+```php
+use Drupal\formui\Form;
+function example_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state) {
+  Form::update($form, function($form) {
+    $options = array('example1' => 'Example 1', 'example2' => 'Example 2');
 
-        $formui
-          ->add(
-            'some_field',
-            $formui->textfield()
-              ->setOption('title', 'Some Field')
-              ->setAttribute('class', array('some-class'))
-          )
-          ->add('another_field', $formui->select($options))
-          ->add('submit', $formui->submit('Submit'));
-      });
-    }
+    $formui
+      ->add(
+        'some_field',
+        $formui->textfield()
+          ->setOption('title', 'Some Field')
+          ->setAttribute('class', array('some-class'))
+      )
+      ->add('another_field', $formui->select($options))
+      ->add('submit', $formui->submit('Submit'));
+  });
+}
+```
 
 ## Types
 
