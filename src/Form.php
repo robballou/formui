@@ -35,6 +35,52 @@ class Form {
   }
 
   /**
+   * Update the form and return the generated array.
+   *
+   * Updates the form without needing to manually create a Form object and
+   * generate the form array. The updates can either be an array of updates or
+   * a callable that performs the updates on the generated Form object.
+   *
+   * The array option would look like:
+   *
+   *     Form::update($form, [
+   *       ['addSubmitHandler', 'my_submit_handler'],
+   *     ]);
+   *
+   * The callback option would look like:
+   *
+   *     Form::update($form, function($form) {
+   *       $form->addSubmitHandler('my_submit_handler');
+   *     });
+   *
+   * @param array $form
+   *   The form array to update.
+   * @param mixed $updates
+   *   Either an array of updates or a callback that will receive the
+   *   \Drupal\formui\Form object.
+   *
+   * @return array
+   *   The updated form array.
+   */
+  public static function update(array &$form, $updates) {
+    $formui = new static($form);
+
+    if (is_array($updates)) {
+      foreach ($updates as $update) {
+        $method = array_shift($update);
+        $arguments = $update;
+        call_user_func_array([$formui, $method], $arguments);
+      }
+    }
+    elseif (is_callable($updates)) {
+      $updates($formui);
+    }
+
+    $form = $formui->generate();
+    return $form;
+  }
+
+  /**
    * Handle calling for items.
    *
    * You can call $form->[type]() to generate a form
@@ -106,8 +152,47 @@ class Form {
 
     $this->items[$key] = $item;
     if ($fieldset) {
-      $this->items[$fieldset]->$key = $item;
+      if (is_object($this->items[$fieldset])) {
+        $this->items[$fieldset]->$key = $item;
+      }
+      elseif (is_array($this->items[$fieldset]) && isset($this->items[$fieldset]['widget'])) {
+        $index = array_reduce(array_keys($this->items[$fieldset]['widget']), function($carry, $item) {
+          if (is_int($item) && $item > $carry) {
+            return $item;
+          }
+          return $carry;
+        }, 0);
+
+        $this->items[$fieldset]['widget'][($index + 1)] = $item->generate();
+      }
+      else {
+        $this->items[$fieldset][$key] = $item->generate();
+      }
       unset($this->items[$key]);
+    }
+    return $this;
+  }
+
+  /**
+   * Add a class or classes to the form attributes.
+   *
+   * @param mixed $class
+   *   A single class name string or an array of class names.
+   */
+  public function addClass($class) {
+    if (!isset($this->items['#attributes'])) {
+      $this->items['#attributes'] = [];
+    }
+    if (!isset($this->items['#attributes']['class'])) {
+      $this->items['#attributes']['class'] = [];
+    }
+    if (!in_array($this->items['#attributes']['class'])) {
+      if (!is_array($class)) {
+        $class = [$class];
+      }
+      foreach ($class as $this_class) {
+        $this->items['#attributes']['class'][] = $this_class;
+      }
     }
     return $this;
   }
@@ -135,7 +220,7 @@ class Form {
     $this->prepareSubmitHandlers();
 
     $submit_handlers =& $this->items['#submit'];
-    if (isset($this->items['actions']['submit'])) {
+    if (isset($this->items['actions']['submit']['#submit']) && is_array($this->items['actions']['submit']['#submit'])) {
       $submit_handlers =& $this->items['actions']['submit']['#submit'];
     }
 
@@ -264,6 +349,20 @@ class Form {
   }
 
   /**
+   * Remove a class or classes from the form attributes.
+   */
+  public function removeClass($class) {
+    if (isset($this->items['#attributes']['class'])) {
+      if (!is_array($class)) {
+        $class = [$class];
+      }
+      $this->items['#attributes']['class'] = array_filter($this->items['#attributes']['class'], function($item) use ($class) {
+        return in_array($item, $class);
+      });
+    }
+  }
+
+  /**
    * Set an existing item's options.
    *
    * @param string $item
@@ -279,7 +378,12 @@ class Form {
     $this_item =& $this->items;
     foreach ($parts as $part) {
       if (!isset($this_item[$part])) {
-        return $this;
+        if (isset($this_item['#' . $part])) {
+          $part = '#' . $part;
+        }
+        else {
+          return $this;
+        }
       }
       $this_item =& $this_item[$part];
     }
