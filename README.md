@@ -46,7 +46,7 @@ You can also use the new `Form::update()` pattern as well. This will eliminate t
 ```php
 use Drupal\formui\Form;
 function example_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state) {
-  Form::update($form, function($form) {
+  Form::update($form, function($form) use ($form_state) {
     $options = array('example1' => 'Example 1', 'example2' => 'Example 2');
 
     $formui
@@ -66,6 +66,8 @@ function example_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_s
 
 * Checkbox
 * Checkboxes
+* Container
+* Fieldset
 * File
 * Hidden
 * Managedfile
