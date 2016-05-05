@@ -4,7 +4,7 @@
  * Implements hook_form_alter().
  */
 function formui_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
-  if (\Drupal::request()->get('form_id') && \Drupal::currentUser()->hasPermission('access devel info')) {
+  if (\Drupal::request()->get('debug_form_id') && \Drupal::currentUser()->hasPermission('access devel info')) {
     dpm($form_id);
   }
 }

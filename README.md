@@ -173,3 +173,7 @@ $formui
   // will get a #weight of 20
   ->add('item2', $formui->textfield())
 ```
+
+## Debug form IDs
+
+Often you want to create a form alter for a specific form ID, so FormUI also includes a shortcut for finding form id's on a page. If you have devel enabled, you can add `?debug_form_id=1` to your query string to get a DPM for each form ID on a page.
