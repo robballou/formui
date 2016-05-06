@@ -280,6 +280,28 @@ class Form {
   }
 
   /**
+   * Get some part of the form from the internal storage.
+   *
+   * This is not chainable.
+   */
+  public function get($thing) {
+    $parts = explode('.', $thing);
+    $this_item =& $this->items;
+    foreach ($parts as $part) {
+      if (!isset($this_item[$part])) {
+        if (isset($this_item['#' . $part])) {
+          $part = '#' . $part;
+        }
+        else {
+          return $this;
+        }
+      }
+      $this_item =& $this_item[$part];
+    }
+    return $this_item;
+  }
+
+  /**
    * Is this thing a FAPI option
    *
    * @param string $key
@@ -311,6 +333,21 @@ class Form {
   public function incrementWeight() {
     $this->weight += $this->weightIncrement;
     return $this;
+  }
+
+  /**
+   * Loop over part of the form.
+   *
+   * This will loop over the part of the form specified returning any numeric
+   * or non-property key value pairs (for example, it skips '#type', etc.)
+   */
+  public function loopOver($thing) {
+    $this_thing = $this->get($thing);
+    foreach ($this_thing as $item => $value) {
+      if (is_numeric($item) || substr($item, 0, 1) != '#') {
+        yield $item => $value;
+      }
+    }
   }
 
   /**
